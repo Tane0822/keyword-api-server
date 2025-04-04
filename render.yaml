@@ -3,7 +3,7 @@ services:
     name: keyword-api-server
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
-    pythonVersion: 3.11
+    startCommand: python3 app.py        # ← ここを変更！
+    pythonVersion: 3.11                 # ← この行も追加！
     plan: free
     region: oregon
