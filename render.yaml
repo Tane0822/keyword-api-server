@@ -1,13 +1,8 @@
 services:
   - type: web
-    name: trends-api
+    name: keyword-api-server
     env: python
-    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
-    autoDeploy: true
-    envVars:
-      - key: RENDER_PYTHON_VERSION
-        value: 3.11.11
-      - key: RENDER_PYTHON_PACKAGE_MANAGER
-        value: pip
+    plan: free
+    region: oregon
