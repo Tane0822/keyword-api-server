@@ -2,11 +2,10 @@ services:
   - type: web
     name: trends-api
     env: python
-    region: singapore
-    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python3 app.py
-    autoDeploy: true
+    plan: free
+    region: singapore
     envVars:
       - key: RENDER_PYTHON_VERSION
         value: 3.11.11
