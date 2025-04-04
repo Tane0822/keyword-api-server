@@ -2,5 +2,9 @@ services:
   - type: web
     name: trends-api
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python3 app.py"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 app.py
+    autoDeploy: true
+    envVars:
+      - key: RENDER_PYTHON_PACKAGE_MANAGER
+        value: pip
