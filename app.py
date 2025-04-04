@@ -1,29 +1,32 @@
 from flask import Flask, request, jsonify
 from pytrends.request import TrendReq
-import time
 
 app = Flask(__name__)
 
 @app.route('/trend', methods=['POST'])
 def get_trends():
-    keywords = request.json.get('keywords', [])
-    pytrends = TrendReq(hl='ja-JP', tz=540)
-    result = {}
+    try:
+        data = request.get_json()
+        keywords = data.get('keywords', [])
 
-    for i in range(0, len(keywords), 5):
-        chunk = keywords[i:i+5]
-        try:
-            pytrends.build_payload(chunk, cat=0, timeframe='today 12-m', geo='JP')
-            data = pytrends.interest_over_time()
-            if not data.empty:
-                for kw in chunk:
-                    score = int(data[kw].mean()) if kw in data else 0
-                    result[kw] = score
+        if not keywords:
+            return jsonify({'error': 'キーワードがありません'}), 400
+
+        pytrends = TrendReq(hl='ja-JP', tz=540)
+        pytrends.build_payload(keywords, timeframe='now 7-d', geo='JP')
+        trend_data = pytrends.interest_over_time()
+
+        result = {}
+        for kw in keywords:
+            if kw in trend_data.columns:
+                score = trend_data[kw].mean()
+                result[kw] = int(score)
             else:
-                for kw in chunk:
-                    result[kw] = 0
-        except:
-            for kw in chunk:
                 result[kw] = 0
-        time.sleep(1)
-    return jsonify(result)
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
